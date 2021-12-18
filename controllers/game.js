@@ -56,7 +56,7 @@ exports.getUserGames = async (req, res) => {
 }
 exports.createNewGame = async (req, res) => {
     try {
-        const availableUser = await User.findOne({ _id: { $nin: req.user._id }, isOnline: true })
+        const availableUser = await User.findOne({ _id: { $nin: req.user._id }, isOnline: true, isCurrentlyPlaying: false })
         const currentUser = await User.findOne({ _id: req.user._id })
         const iscurrentUserWhite = Math.round(Math.random()) === 1
         if (!availableUser)
@@ -81,6 +81,44 @@ exports.createNewGame = async (req, res) => {
                     black: req.user._id
                 },
             })
+
+        socket.emit('start-game', { userId: availableUser._id, oponent: currentUser, game: createdGame })
+
+        res.status(200).json({ game: createdGame })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: error.message })
+    }
+}
+
+exports.createNewGameWithPlayer = async (req, res) => {
+    try {
+        const availableUser = await User.findOne({ _id: req.params.userId, isOnline: true, isCurrentlyPlaying: false })
+        const currentUser = await User.findOne({ _id: req.user._id })
+        const iscurrentUserWhite = Math.round(Math.random()) === 1
+        if (!availableUser)
+            return res.status(404).json({ message: 'oponent not found' })
+
+        let createdGame = null
+        if (iscurrentUserWhite)
+            createdGame = await Game.create({
+                date: new Date().toISOString(),
+                gameMoves: [req.body.board],
+                oponents: {
+                    white: req.user._id,
+                    black: availableUser._id
+                },
+            })
+        else
+            createdGame = await Game.create({
+                date: new Date().toISOString(),
+                gameMoves: [req.body.board],
+                oponents: {
+                    white: availableUser._id,
+                    black: req.user._id
+                },
+            })
+
         socket.emit('start-game', { userId: availableUser._id, oponent: currentUser, game: createdGame })
 
         res.status(200).json({ game: createdGame })

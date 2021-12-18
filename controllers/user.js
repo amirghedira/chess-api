@@ -25,6 +25,20 @@ exports.createUser = async (req, res) => {
 };
 
 
+exports.searchUsers = async (req, res) => {
+    try {
+        const users = await User.find({ _id: { $nin: req.user._id }, username: { $regex: `(?:${req.params.searchTerm.split(' ').join('|')})`, $options: 'i' } }).exec();
+        res.status(200).json({ users });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+
+
+
 
 exports.userLogin = async (req, res) => {
     try {

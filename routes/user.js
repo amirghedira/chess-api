@@ -9,7 +9,7 @@ const
         updateAccessToken,
         updateUserPassword,
         verifyUser,
-
+        searchUsers
     } = require('../controllers/user')
 const AuthGuard = require('../middleware/AuthGuard')
 const router = express.Router()
@@ -23,6 +23,8 @@ router.post('/token', updateAccessToken)
 
 
 router.get('/verify/:token', verifyUser)
+router.get('/search/:searchTerm', AuthGuard, searchUsers)
+
 router.get('/connected-user', AuthGuard, getConnectedUser)
 
 
