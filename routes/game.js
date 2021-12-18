@@ -2,7 +2,7 @@ const express = require('express')
 const
     {
         getGame,
-        updateGame,
+        endGame,
         getUserGames,
         createNewGame,
         updateGameMoves
@@ -16,7 +16,7 @@ router.post('/', AuthGuard, createNewGame)
 router.get('/', AuthGuard, getUserGames)
 router.get('/:gameId', AuthGuard, getGame)
 router.patch('/move/:gameId', AuthGuard, updateGameMoves)
-router.patch('/:gameId', AuthGuard, updateGame)
+router.patch('/:gameId', AuthGuard, endGame)
 
 
 
