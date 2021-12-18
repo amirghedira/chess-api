@@ -60,14 +60,24 @@ server.listen(process.env.PORT || 5000, () => {
         })
 
 
-        socket.on('accept-challenge', ({ userId, oponent }) => {
+        socket.on('accept-challenge', ({ userId, oponent, game }) => {
             const userIndex = ConnectedUsers.findIndex(connecteduser => {
                 return connecteduser.userid === userId
             })
 
             if (userIndex >= 0)
                 ConnectedUsers[userIndex].socketIds.forEach(socketId => {
-                    socket.broadcast.to(socketId).emit('accepted-challenge', { oponent })
+                    socket.broadcast.to(socketId).emit('accepted-challenge', { oponent, game })
+                })
+        })
+        socket.on('abandant-game', ({ userId, oponent }) => {
+            const userIndex = ConnectedUsers.findIndex(connecteduser => {
+                return connecteduser.userid === userId
+            })
+
+            if (userIndex >= 0)
+                ConnectedUsers[userIndex].socketIds.forEach(socketId => {
+                    socket.broadcast.to(socketId).emit('abandaned-game', { oponent })
                 })
         })
         socket.on('reject-challenge', ({ userId, oponent }) => {
