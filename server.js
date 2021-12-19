@@ -91,14 +91,14 @@ server.listen(process.env.PORT || 5000, () => {
                 })
         })
 
-        socket.on('make-move', ({ userId, boardGame, lastMove }) => {
+        socket.on('make-move', ({ userId, eatedPiece, boardGame, lastMove }) => {
 
             const userIndex = ConnectedUsers.findIndex(connecteduser => {
                 return connecteduser.userid === userId
             })
             if (userIndex >= 0)
                 ConnectedUsers[userIndex].socketIds.forEach(socketId => {
-                    socket.broadcast.to(socketId).emit('played-move', { boardGame, lastMove })
+                    socket.broadcast.to(socketId).emit('played-move', { boardGame, eatedPiece, lastMove })
                 })
         })
     })
