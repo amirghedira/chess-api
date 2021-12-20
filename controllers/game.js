@@ -82,7 +82,7 @@ exports.createNewGame = async (req, res) => {
                 },
             })
 
-        socket.emit('start-game', { userId: availableUser._id, oponent: currentUser, game: createdGame })
+        socket.emit('send-invitation-game', { userId: availableUser._id, oponent: currentUser, game: createdGame })
 
         res.status(200).json({ game: createdGame })
     } catch (error) {
@@ -119,7 +119,7 @@ exports.createNewGameWithPlayer = async (req, res) => {
                 },
             })
 
-        socket.emit('start-game', { userId: availableUser._id, oponent: currentUser, game: createdGame })
+        socket.emit('send-invitation-game', { userId: availableUser._id, oponent: currentUser, game: createdGame })
 
         res.status(200).json({ game: createdGame })
     } catch (error) {
